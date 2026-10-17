@@ -7,7 +7,7 @@ android {
     namespace = "com.gamerewards.demo"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.gamerewards.demo" // must match android.packageName in the server's partners.json
+        applicationId = "com.gamerewards.demo" // must match the partner's Android package name in the server's admin
         minSdk = 29 // for Theme.DeviceDefault.DayNight, so the portal follows dark mode
         targetSdk = 36
         versionCode = 1 // bump for every Play upload

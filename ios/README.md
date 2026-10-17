@@ -64,7 +64,7 @@ Never ship `devFakeProof: true`, and never run the server in fake mode in produc
 App Attest only works on a real device. To try it end to end:
 
 1. Set your team under **Signing & Capabilities** of the Demo target, and change its bundle id if `com.gamerewards.demo` is taken.
-2. Run the server with `ATTEST_MODE=real`, a partner `ios` block with that team id, bundle id and `"environment": "development"`, reachable from the phone over HTTPS.
+2. Run the server with `ATTEST_MODE=real`, reachable from the phone over HTTPS, and set the partner's iOS app in the admin (partner Settings) to that team id, bundle id and the Development environment.
 3. Point the demo's `baseURL` at that server and run on the iPhone. With App Attest available the SDK uses it even when `devFakeProof` is on.
 
 ## Tests

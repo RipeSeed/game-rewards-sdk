@@ -85,21 +85,13 @@ The portal runs in a plain WebView with these settings:
 3. **Create the service account the server uses to decode tokens.** In the same Cloud project, go to
    **IAM & Admin > Service accounts > Create service account**. Grant it **Service Account User** and **Service
    Usage Consumer**. Then go to **Keys > Add key > Create new key > JSON**. Send the JSON file to the Game Rewards
-   operator over a secure channel. In the MVP there's no partner dashboard yet: the operator saves it as
-   `server/secrets/<partner>-google-sa.json`. `.gitignore` already excludes `server/secrets/`.
+   operator over a secure channel. The operator uploads it in the admin (partner Overview, Android key) and runs
+   **Check with Google**, which shows Google's own error if the key or the API isn't right.
 4. **Copy the app signing certificate.** Go to **Test and release > App integrity > App signing** and copy the
    **App signing key certificate** SHA-256. Use the app signing key, not the upload key: Play re-signs your app, and
    Play Integrity reports the certificate Play signed with.
-5. The operator adds your app to the partner entry in `partners.json`:
-
-```json
-"android": {
-  "packageName": "com.yourcompany.app",
-  "certSha256": ["AB:CD:EF:…"],
-  "cloudProjectNumber": "123456789012",
-  "serviceAccountFile": "../secrets/yourpartner-google-sa.json"
-}
-```
+5. The operator enters your app in the partner's settings in the admin (`/admin/`, partner Settings, Android app):
+   the package name, the App signing certificate SHA-256 and the Cloud project number. It is live at once.
 
 6. **Check the quota before launch.** Every launch uses one of the Cloud project's 10,000 default daily Play Integrity
    decodes. Past that, launches fail with `google_error` until the next day. Request an increase in Cloud Console
@@ -131,15 +123,15 @@ error:
 |---|---|
 | `Failed to connect to localhost/127.0.0.1:8080` | Start the dev server, then run `adb reverse tcp:8080 tcp:8080` (step 2). |
 | `Cleartext HTTP traffic … not permitted` | Use the debug build, or a host from the network security config. |
-| `unknown_client: …` | The config the server loaded has no partner `demo`. The startup line prints its path; `npm run dev` uses `config/partners.example.json` unless `CONFIG_PATH` is set. Add the partner, or point `CONFIG_PATH` at a config that has it. |
+| `unknown_client: …` | The server's config has no partner `demo`. A new database starts from `config/partners.example.json` (or `CONFIG_PATH`), which has it; after that the database keeps its own config, which the startup line reports. Add the partner in the admin, or start with a new `DB_PATH`. |
 
 ## Test real Play Integrity on an internal testing track
 
 Play Integrity only reports `PLAY_RECOGNIZED` for an app installed from Google Play, so use an internal testing
 track and a real phone. Emulators and rooted phones fail `MEETS_DEVICE_INTEGRITY`.
 
-1. Use a package name you own in Play Console. Set `applicationId` in `demo/build.gradle.kts` and `packageName` in
-   `partners.json` to it.
+1. Use a package name you own in Play Console. Set `applicationId` in `demo/build.gradle.kts` and the partner's
+   package name in the admin to it.
 2. In `demo/build.gradle.kts` `defaultConfig`, set `BASE_URL` to an HTTPS server running with `ATTEST_MODE=real` and
    `CLOUD_PROJECT_NUMBER` to your project number (for example `123456789012L`).
 3. Build and sign the bundle with an upload key. Keep the keystore out of the repo.
@@ -155,7 +147,7 @@ track and a real phone. Emulators and rooted phones fail `MEETS_DEVICE_INTEGRITY
    first. On the **Testers** tab, add an email list that includes your Google account, and copy the opt-in link.
    Bump `versionCode` for every new upload.
 5. Finish the Play Console setup above: link the Cloud project, add the service account, and copy the App signing
-   SHA-256 into `certSha256`. Then restart the server.
+   SHA-256 into the partner's settings in the admin. Upload the key there and run **Check with Google**. No restart.
 6. On the phone, signed in as a tester, open the opt-in link, accept, and install the app from the Play Store. A
    build installed with `adb` or Android Studio is not Play-recognized. Tap **Play & Earn**. The session should be
    verified, with balance, wallet and rewards visible.
@@ -167,7 +159,7 @@ line shows `attestation_failed (<reason>)` when the partner uses `onAttestFail: 
 |---|---|
 | `not_play_recognized` | Installed outside Play (adb or Android Studio). Uninstall, then reinstall from the opt-in link. |
 | `bad_cert` | `certSha256` holds the upload key; use the **App signing** key. |
-| `wrong_package` | `packageName` in `partners.json` doesn't match `applicationId`. |
+| `wrong_package` | The partner's package name in the admin doesn't match `applicationId`. |
 | `device_integrity` | Emulator, rooted phone or unlocked bootloader. |
 | `google_error` | Service account isn't in the linked project, lacks the two roles, the API is off, the JSON is wrong, or the daily quota is used up. |
 | `stale` | The phone's clock is more than 2 minutes off. |
