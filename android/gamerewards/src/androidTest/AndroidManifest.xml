@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The test talks to a local plain-HTTP stand-in for /v1/launch. -->
+    <application android:usesCleartextTraffic="true">
+        <activity android:name="com.gamerewards.HostActivity" />
+    </application>
+</manifest>

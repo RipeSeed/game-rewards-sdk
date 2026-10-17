@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Lets the WebView track connectivity, so the portal's navigator.onLine and offline banner work. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application>
+        <!-- configChanges: rotating mid-quiz must not reload the portal. -->
+        <activity
+            android:name="com.gamerewards.GameRewardsActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+            android:exported="false" />
+    </application>
+</manifest>
