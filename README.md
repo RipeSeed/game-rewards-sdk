@@ -23,7 +23,7 @@ maven("https://maven.pkg.github.com/RipeSeed/game-rewards-sdk") {
 }
 
 // app/build.gradle.kts
-dependencies { implementation("com.gamerewards:gamerewards:0.1.0") }
+dependencies { implementation("com.gamerewards:gamerewards:0.1.1") }
 ```
 
 Or download `gamerewards-release.aar` from [Releases](https://github.com/RipeSeed/game-rewards-sdk/releases) and add
