@@ -1,4 +1,5 @@
 // swift-tools-version:5.9
+// At the root of the public SDK repo (this monorepo's sdk/ folder), so apps add it by Git URL.
 import PackageDescription
 
 let package = Package(
@@ -8,7 +9,7 @@ let package = Package(
     platforms: [.iOS(.v15), .macOS(.v12)],
     products: [.library(name: "GameRewards", targets: ["GameRewards"])],
     targets: [
-        .target(name: "GameRewards"),
-        .testTarget(name: "GameRewardsTests", dependencies: ["GameRewards"]),
+        .target(name: "GameRewards", path: "ios/Sources/GameRewards"),
+        .testTarget(name: "GameRewardsTests", dependencies: ["GameRewards"], path: "ios/Tests/GameRewardsTests"),
     ]
 )

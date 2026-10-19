@@ -8,9 +8,11 @@ import UIKit
 struct DemoApp: App {
     init() {
         #if DEBUG
-        // Dev server on the Mac with fake attestation: `cd server && npm run seed && npm run dev`.
-        // The simulator has no App Attest, so devFakeProof sends `fake:<requestHash>` there.
-        GameRewards.configure(.init(clientId: "demo", baseURL: URL(string: "http://localhost:8080")!, devFakeProof: true))
+        // The shared sandbox (fake attestation). The simulator has no App Attest, so devFakeProof sends
+        // `fake:<requestHash>` there. For a dev server on this Mac, use http://localhost:8080 (Info.plist allows it).
+        GameRewards.configure(.init(clientId: "demo",
+                                    baseURL: URL(string: "https://game-rewards-sandbox.internal.ripeseed.io")!,
+                                    devFakeProof: true))
         #else
         // ponytail: placeholder; point Release at your deployed server.
         GameRewards.configure(.init(clientId: "demo", baseURL: URL(string: "https://rewards.example.com")!))

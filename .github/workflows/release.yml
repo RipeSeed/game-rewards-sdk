@@ -1,0 +1,30 @@
+# Runs in the public SDK repo (this folder is its root). A v1.2.3 tag publishes com.gamerewards:gamerewards:1.2.3 to
+# GitHub Packages and attaches the AAR to a GitHub release. Swift Package Manager needs nothing more than the tag.
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+  packages: write
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Test and publish
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :gamerewards:testDebugUnitTest :gamerewards:publishReleasePublicationToGitHubPackagesRepository -PsdkVersion="${GITHUB_REF_NAME#v}"
+      - name: GitHub release with the AAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" gamerewards/build/outputs/aar/gamerewards-release.aar --title "$GITHUB_REF_NAME" --generate-notes

@@ -19,9 +19,10 @@ android {
     }
     buildTypes {
         debug {
-            // The host's dev server (ATTEST_MODE=fake) via `adb reverse tcp:8080 tcp:8080`. localhost matches the
-            // server's default PUBLIC_URL, so API calls and portalUrl share one origin. src/debug allows cleartext to it.
-            buildConfigField("String", "BASE_URL", "\"http://localhost:8080\"")
+            // The shared sandbox (fake attestation, client "demo"). For a dev server on this machine instead, use
+            // "http://localhost:8080" and `adb reverse tcp:8080 tcp:8080`: localhost matches the server's default
+            // PUBLIC_URL, so API calls and portalUrl share one origin, and src/debug allows cleartext to it.
+            buildConfigField("String", "BASE_URL", "\"https://game-rewards-sandbox.internal.ripeseed.io\"")
             buildConfigField("boolean", "DEV_FAKE_PROOF", "true")
         }
     }
